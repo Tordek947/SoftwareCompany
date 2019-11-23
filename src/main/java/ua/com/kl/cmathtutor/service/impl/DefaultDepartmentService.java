@@ -35,6 +35,7 @@ public class DefaultDepartmentService implements DepartmentService {
 
     @Override
     public Department createDepartment(Department department) {
+	department.setId(0);
 	return departmentRepository.save(department);
     }
 
@@ -71,7 +72,7 @@ public class DefaultDepartmentService implements DepartmentService {
     public List<Employee> getAllEmployeesInDepartment(Department department) throws NotFoundException {
 	final Integer departmentId = department.getId();
 	getDepartmentById(departmentId);
-	return employeeService.getAllEmployees().stream().filter(empl -> empl.getDepartmentId().equals(departmentId))
+	return employeeService.getAllEmployees().stream().filter(empl -> departmentId.equals(empl.getDepartmentId()))
 		.collect(Collectors.toList());
     }
 
