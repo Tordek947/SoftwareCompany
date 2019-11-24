@@ -2,8 +2,12 @@ package ua.com.kl.cmathtutor.repository.inmemory;
 
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.platform.commons.util.ReflectionUtils;
@@ -11,6 +15,13 @@ import org.junit.platform.commons.util.ReflectionUtils;
 import ua.com.kl.cmathtutor.domain.entity.Bug;
 
 class InMemoryBugRepositoryTest extends AbstractCrudInMemoryRepositoryTest<Bug> {
+
+    @Test
+    final void getInstance_ShouldReturnTheSameInstance() {
+	final InMemoryBugRepository firstInstance = InMemoryBugRepository.getInstance();
+
+	assertThat(InMemoryBugRepository.getInstance(), is(sameInstance(firstInstance)));
+    }
 
     @Override
     protected InMemoryBugRepository getRepositoryForTesting() {

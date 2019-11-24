@@ -50,6 +50,13 @@ class DefaultDepartmentServiceTest {
 
     DefaultDepartmentService service;
 
+    @Test
+    final void getInstance_ShouldReturnTheSameInstance() {
+	final DefaultDepartmentService firstInstance = DefaultDepartmentService.getInstance();
+
+	assertThat(DefaultDepartmentService.getInstance(), is(sameInstance(firstInstance)));
+    }
+
     @BeforeEach
     void setUp() throws Exception {
 	service = new DefaultDepartmentService(departmentRepository, employeeService);
