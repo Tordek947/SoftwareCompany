@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Employee implements Serializable {
+public class Employee implements Serializable, IdContainer {
 
     @Builder.Default
     private Integer id = 0;

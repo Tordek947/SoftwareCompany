@@ -35,7 +35,7 @@ class DefaultEmployeeServiceTest {
     DefaultEmployeeService service;
 
     @BeforeEach
-    void setUpBeforeClass() throws Exception {
+    void setUp() throws Exception {
 	service = new DefaultEmployeeService(repository);
     }
 
