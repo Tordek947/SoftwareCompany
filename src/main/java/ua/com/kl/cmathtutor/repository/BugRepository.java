@@ -11,5 +11,5 @@ public interface BugRepository {
 
     Optional<Bug> findById(Integer id);
 
-    Bug save(Bug department);
+    Bug save(Bug bug);
 }

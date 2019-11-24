@@ -10,11 +10,11 @@ public interface DepartmentService {
 
     Department createDepartment(Department department);
 
-    Department updateDepartmentById(int departmentId, Department departmentUpdateData) throws NotFoundException;
+    Department updateDepartmentById(Integer departmentId, Department departmentUpdateData) throws NotFoundException;
 
     List<Department> getAllDepartments();
 
-    Department getDepartmentById(int departmentId) throws NotFoundException;
+    Department getDepartmentById(Integer departmentId) throws NotFoundException;
 
     void assignEmployeeToDepartment(Employee employee, Department department) throws NotFoundException;
 

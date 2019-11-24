@@ -18,6 +18,6 @@ public class Bug implements IdContainer, Serializable {
     private Integer id = 0;
     private String description;
     @Builder.Default
-    private Integer userId = null;
+    private Integer employeeId = null;
 
 }

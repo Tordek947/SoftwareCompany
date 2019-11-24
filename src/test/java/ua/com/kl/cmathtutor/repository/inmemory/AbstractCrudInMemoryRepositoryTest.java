@@ -52,6 +52,11 @@ abstract public class AbstractCrudInMemoryRepositoryTest<T extends Serializable 
     }
 
     @Test
+    final void findById_withIdIsNull_ShouldReturnEmptyOptional() {
+	assertFalse(repository.findById(null).isPresent());
+    }
+
+    @Test
     final void whenEntityIsCreated_Then_findById_withThisEntityId_ShouldReturnEqualButNotSameEntity() {
 	final T savedEntity = repository.save(getDummyEntity());
 

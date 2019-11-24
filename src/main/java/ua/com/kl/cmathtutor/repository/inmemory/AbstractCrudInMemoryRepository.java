@@ -19,6 +19,9 @@ public abstract class AbstractCrudInMemoryRepository<T extends Serializable & Id
     }
 
     public Optional<T> findById(Integer id) {
+	if (id == null) {
+	    return Optional.empty();
+	}
 	return Optional.ofNullable(entitiesById.get(id));
     }
 

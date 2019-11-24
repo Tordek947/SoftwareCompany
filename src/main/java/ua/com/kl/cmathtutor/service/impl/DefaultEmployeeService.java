@@ -36,7 +36,7 @@ public class DefaultEmployeeService implements EmployeeService {
     }
 
     @Override
-    public Employee updateEmployeeById(int employeeId, Employee employeeUpdateData) throws NotFoundException {
+    public Employee updateEmployeeById(Integer employeeId, Employee employeeUpdateData) throws NotFoundException {
 	Optional<Employee> employee = employeeRepository.findById(employeeId);
 	employeeUpdateData.setId(employeeId);
 	return employee.map(empl -> employeeRepository.save(employeeUpdateData))
@@ -53,7 +53,7 @@ public class DefaultEmployeeService implements EmployeeService {
     }
 
     @Override
-    public Employee getEmployeeById(int employeeId) throws NotFoundException {
+    public Employee getEmployeeById(Integer employeeId) throws NotFoundException {
 	return employeeRepository.findById(employeeId).orElseThrow(employeeNotFoundException(employeeId));
     }
 
