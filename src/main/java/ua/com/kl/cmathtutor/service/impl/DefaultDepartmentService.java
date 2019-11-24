@@ -40,7 +40,8 @@ public class DefaultDepartmentService implements DepartmentService {
     }
 
     @Override
-    public Department updateDepartmentById(int departmentId, Department departmentUpdateData) throws NotFoundException {
+    public Department updateDepartmentById(Integer departmentId, Department departmentUpdateData)
+	    throws NotFoundException {
 	departmentUpdateData.setId(departmentId);
 	return departmentRepository.findById(departmentId).map(dept -> departmentRepository.save(departmentUpdateData))
 		.orElseThrow(departmentNotFoundException(departmentId));
@@ -56,13 +57,14 @@ public class DefaultDepartmentService implements DepartmentService {
     }
 
     @Override
-    public Department getDepartmentById(int departmentId) throws NotFoundException {
+    public Department getDepartmentById(Integer departmentId) throws NotFoundException {
 	return departmentRepository.findById(departmentId).orElseThrow(departmentNotFoundException(departmentId));
     }
 
     @Override
     public void assignEmployeeToDepartment(Employee employee, Department department) throws NotFoundException {
 	final Integer departmentId = department.getId();
+	employee = employeeService.getEmployeeById(employee.getId());
 	getDepartmentById(departmentId);
 	employee.setDepartmentId(departmentId);
 	employeeService.updateEmployeeById(employee.getId(), employee);

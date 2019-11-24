@@ -1,20 +1,11 @@
 package ua.com.kl.cmathtutor.service;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.only;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -50,6 +41,13 @@ class DefaultDepartmentServiceTest {
 
     DefaultDepartmentService service;
 
+    @Test
+    final void getInstance_ShouldReturnTheSameInstance() {
+	final DefaultDepartmentService firstInstance = DefaultDepartmentService.getInstance();
+
+	assertThat(DefaultDepartmentService.getInstance(), is(sameInstance(firstInstance)));
+    }
+
     @BeforeEach
     void setUp() throws Exception {
 	service = new DefaultDepartmentService(departmentRepository, employeeService);
@@ -72,7 +70,6 @@ class DefaultDepartmentServiceTest {
 
 	final Department createdDepartment = service.createDepartment(department);
 	assertAll(() -> assertThat(createdDepartment, is(sameInstance(department))),
-		// TODO: add test for repository, that id of 0 means new entity creation
 		() -> assertThat(createdDepartment.getId(), is(equalTo(0))));
 	verify(departmentRepository, atLeastOnce()).save(department);
     }
@@ -110,7 +107,7 @@ class DefaultDepartmentServiceTest {
 
     @Test
     final void whenDepartmentExists_Then_getDepartmentById_ShouldReturnADepartment() throws NotFoundException {
-	final int departmentId = 45;
+	final Integer departmentId = 45;
 	final Department department = new Department(departmentId, "John");
 	when(departmentRepository.findById(any())).thenReturn(Optional.of(department));
 
@@ -121,7 +118,7 @@ class DefaultDepartmentServiceTest {
 
     @Test
     final void whenDepartmentNotExists_Then_getDepartmentById_ShouldThrowAnException() throws NotFoundException {
-	final int departmentId = 45;
+	final Integer departmentId = 45;
 	when(departmentRepository.findById(any())).thenReturn(Optional.empty());
 
 	assertThrows(NotFoundException.class, () -> service.getDepartmentById(departmentId));
@@ -136,43 +133,45 @@ class DefaultDepartmentServiceTest {
 	final Integer departmentId = Integer.valueOf(1);
 	final Department department = new Department(departmentId, "Dep1");
 	when(departmentRepository.findById(any())).thenReturn(Optional.of(department));
-	when(employeeService.updateEmployeeById(anyInt(), any())).thenReturn(employee);
+	when(employeeService.getEmployeeById(any())).thenReturn(employee);
+	when(employeeService.updateEmployeeById(any(), any())).thenReturn(employee);
 
 	service.assignEmployeeToDepartment(employee, department);
 
 	assertThat(employee.getId(), is(equalTo(departmentId)));
 
-	verify(departmentRepository).findById(departmentId);
+	verify(departmentRepository, only()).findById(departmentId);
+	verify(employeeService).getEmployeeById(employee.getId());
 	verify(employeeService).updateEmployeeById(employee.getId(), employee);
     }
 
     @Test
-    final void whenDepartmentNotExist_Then_assignEmployeeToDepartment_ShouldThrowException() throws NotFoundException {
+    final void whenEmployeeNotExist_Then_assignEmployeeToDepartment_ShouldThrowException() throws NotFoundException {
 	final Employee employee = new Employee(1, "John", null);
+	final Integer employeeId = employee.getId();
+	final Department department = new Department();
+	when(employeeService.getEmployeeById(any())).thenThrow(NotFoundException.class);
+
+	assertThrows(NotFoundException.class, () -> service.assignEmployeeToDepartment(employee, department));
+
+	verify(employeeService, only()).getEmployeeById(employeeId);
+	verifyZeroInteractions(departmentRepository);
+    }
+
+    @Test
+    final void whenEmployeeExistsAndDepartmentNotExist_Then_assignEmployeeToDepartment_ShouldThrowException()
+	    throws NotFoundException {
+	final Integer employeeId = 1;
+	final Employee employee = new Employee(employeeId, "John", null);
 	final Integer departmentId = Integer.valueOf(1);
 	final Department department = new Department(departmentId, "Dep1");
+	when(employeeService.getEmployeeById(any())).thenReturn(employee);
 	when(departmentRepository.findById(any())).thenReturn(Optional.empty());
 
 	assertThrows(NotFoundException.class, () -> service.assignEmployeeToDepartment(employee, department));
 
 	verify(departmentRepository, only()).findById(departmentId);
-	verifyNoMoreInteractions(employeeService);
-    }
-
-    @Test
-    final void whenDepartmentExistsAndEmployeeNotExist_Then_assignEmployeeToDepartment_ShouldThrowException()
-	    throws NotFoundException {
-	final int employeeId = 1;
-	final Employee employee = new Employee(employeeId, "John", null);
-	final Integer departmentId = Integer.valueOf(1);
-	final Department department = new Department(departmentId, "Dep1");
-	when(departmentRepository.findById(any())).thenReturn(Optional.of(department));
-	when(employeeService.updateEmployeeById(anyInt(), any())).thenThrow(NotFoundException.class);
-
-	assertThrows(NotFoundException.class, () -> service.assignEmployeeToDepartment(employee, department));
-
-	verify(departmentRepository, only()).findById(departmentId);
-	verify(employeeService, only()).updateEmployeeById(employeeId, employee);
+	verify(employeeService, only()).getEmployeeById(employeeId);
     }
 
     @ParameterizedTest
@@ -181,7 +180,7 @@ class DefaultDepartmentServiceTest {
 	    List<Employee> employees, Integer departmentId) throws NotFoundException {
 	final Department department = Department.builder().id(departmentId).build();
 	when(employeeService.getAllEmployees()).thenReturn(employees);
-	when(departmentRepository.findById(anyInt())).thenReturn(Optional.of(department));
+	when(departmentRepository.findById(any())).thenReturn(Optional.of(department));
 
 	final Collection<Employee> expectedEmployeesInDepartment = employees.stream()
 		.filter(e -> e.getDepartmentId().equals(departmentId)).collect(Collectors.toList());
@@ -209,7 +208,7 @@ class DefaultDepartmentServiceTest {
 	    throws NotFoundException {
 	final Integer departmentId = 5;
 	final Department department = Department.builder().id(departmentId).build();
-	when(departmentRepository.findById(anyInt())).thenReturn(Optional.empty());
+	when(departmentRepository.findById(any())).thenReturn(Optional.empty());
 
 	assertThrows(NotFoundException.class, () -> service.getAllEmployeesInDepartment(department));
 

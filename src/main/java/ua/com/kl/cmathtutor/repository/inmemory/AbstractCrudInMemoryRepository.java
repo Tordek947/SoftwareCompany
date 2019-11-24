@@ -19,11 +19,14 @@ public abstract class AbstractCrudInMemoryRepository<T extends Serializable & Id
     }
 
     public Optional<T> findById(Integer id) {
+	if (id == null) {
+	    return Optional.empty();
+	}
 	return Optional.ofNullable(entitiesById.get(id));
     }
 
     public T save(T entity) {
-	if (false == entitiesById.containsKey(entity.getId())) {
+	if (entity.getId().equals(0) || !entitiesById.containsKey(entity.getId())) {
 	    entity.setId(selectId());
 	}
 	entitiesById.put(entity.getId(), deepCopy(entity));

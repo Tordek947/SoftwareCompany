@@ -9,9 +9,9 @@ public interface EmployeeService {
 
     Employee createEmployee(Employee employee);
 
-    Employee updateEmployeeById(int employeeId, Employee employeeUpdateData) throws NotFoundException;
+    Employee updateEmployeeById(Integer employeeId, Employee employeeUpdateData) throws NotFoundException;
 
     List<Employee> getAllEmployees();
 
-    Employee getEmployeeById(int employeeId) throws NotFoundException;
+    Employee getEmployeeById(Integer employeeId) throws NotFoundException;
 }

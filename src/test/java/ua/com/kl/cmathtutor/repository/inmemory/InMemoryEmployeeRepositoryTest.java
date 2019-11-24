@@ -2,8 +2,11 @@ package ua.com.kl.cmathtutor.repository.inmemory;
 
 import java.util.stream.Stream;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.platform.commons.util.ReflectionUtils;
@@ -12,6 +15,13 @@ import ua.com.kl.cmathtutor.domain.entity.Employee;
 import ua.com.kl.cmathtutor.repository.inmemory.InMemoryEmployeeRepository;
 
 class InMemoryEmployeeRepositoryTest extends AbstractCrudInMemoryRepositoryTest<Employee> {
+
+    @Test
+    final void getInstance_ShouldReturnTheSameInstance() {
+	final InMemoryEmployeeRepository firstInstance = InMemoryEmployeeRepository.getInstance();
+
+	assertThat(InMemoryEmployeeRepository.getInstance(), is(sameInstance(firstInstance)));
+    }
 
     @Override
     protected InMemoryEmployeeRepository getRepositoryForTesting() {
@@ -30,8 +40,8 @@ class InMemoryEmployeeRepositoryTest extends AbstractCrudInMemoryRepositoryTest<
 
     @Override
     @MethodSource("employeesToSave")
-    void whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities(Stream<Employee> departments) {
-	super.whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities(departments);
+    void whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities(Stream<Employee> entities) {
+	super.whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities(entities);
     }
 
     static Stream<Arguments> employeesToSave() {

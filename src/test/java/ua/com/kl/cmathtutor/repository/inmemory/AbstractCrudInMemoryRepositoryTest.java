@@ -52,6 +52,11 @@ abstract public class AbstractCrudInMemoryRepositoryTest<T extends Serializable 
     }
 
     @Test
+    final void findById_withIdIsNull_ShouldReturnEmptyOptional() {
+	assertFalse(repository.findById(null).isPresent());
+    }
+
+    @Test
     final void whenEntityIsCreated_Then_findById_withThisEntityId_ShouldReturnEqualButNotSameEntity() {
 	final T savedEntity = repository.save(getDummyEntity());
 
@@ -120,16 +125,16 @@ abstract public class AbstractCrudInMemoryRepositoryTest<T extends Serializable 
      * @param departments -- test parameter given from the parameter @Source
      */
     @ParameterizedTest
-    void whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities(Stream<T> departments) {
-	final List<T> expectedDepartments = departments.map(repository::save).collect(Collectors.toList());
+    void whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities(Stream<T> entities) {
+	final List<T> expectedEntities = entities.map(repository::save).collect(Collectors.toList());
 
-	final List<T> foundDepartments = repository.findAll();
+	final List<T> foundEntities = repository.findAll();
 
-	assertThat(foundDepartments.toArray(), is(equalTo(expectedDepartments.toArray())));
+	assertThat(foundEntities.toArray(), is(equalTo(expectedEntities.toArray())));
     }
 
     @Test
-    void whenEntityExists_Then_deleteById_ShouldReturnTrueAndDeleteEntity() {
+    final void whenEntityExists_Then_deleteById_ShouldReturnTrueAndDeleteEntity() {
 	final T entity = repository.save(getDummyEntity());
 
 	assertAll(() -> assertTrue(repository.deleteById(entity.getId())),
@@ -137,12 +142,12 @@ abstract public class AbstractCrudInMemoryRepositoryTest<T extends Serializable 
     }
 
     @Test
-    void whenEntityNotExists_Then_deleteById_ShouldReturnFalse() {
+    final void whenEntityNotExists_Then_deleteById_ShouldReturnFalse() {
 	assertFalse(repository.deleteById(123));
     }
 
     @Test
-    void whenEntityExists_Then_delete_ShouldReturnTrueAndDeleteEntity() {
+    final void whenEntityExists_Then_delete_ShouldReturnTrueAndDeleteEntity() {
 	final T entity = repository.save(getDummyEntity());
 
 	assertAll(() -> assertTrue(repository.delete(entity)),
@@ -150,7 +155,7 @@ abstract public class AbstractCrudInMemoryRepositoryTest<T extends Serializable 
     }
 
     @Test
-    void whenEntityNotExists_Then_delete_ShouldReturnFalse() {
+    final void whenEntityNotExists_Then_delete_ShouldReturnFalse() {
 	assertFalse(repository.delete(getDummyEntity()));
     }
 

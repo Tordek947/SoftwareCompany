@@ -34,6 +34,13 @@ class DefaultEmployeeServiceTest {
 
     DefaultEmployeeService service;
 
+    @Test
+    final void getInstance_ShouldReturnTheSameInstance() {
+	final DefaultEmployeeService firstInstance = DefaultEmployeeService.getInstance();
+
+	assertThat(DefaultEmployeeService.getInstance(), is(sameInstance(firstInstance)));
+    }
+
     @BeforeEach
     void setUp() throws Exception {
 	service = new DefaultEmployeeService(repository);
