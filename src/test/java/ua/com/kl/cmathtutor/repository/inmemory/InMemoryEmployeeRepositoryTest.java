@@ -30,8 +30,8 @@ class InMemoryEmployeeRepositoryTest extends AbstractCrudInMemoryRepositoryTest<
 
     @Override
     @MethodSource("employeesToSave")
-    void whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities(Stream<Employee> departments) {
-	super.whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities(departments);
+    void whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities(Stream<Employee> entities) {
+	super.whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities(entities);
     }
 
     static Stream<Arguments> employeesToSave() {

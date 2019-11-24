@@ -23,7 +23,7 @@ public abstract class AbstractCrudInMemoryRepository<T extends Serializable & Id
     }
 
     public T save(T entity) {
-	if (false == entitiesById.containsKey(entity.getId())) {
+	if (entity.getId().equals(0) || !entitiesById.containsKey(entity.getId())) {
 	    entity.setId(selectId());
 	}
 	entitiesById.put(entity.getId(), deepCopy(entity));

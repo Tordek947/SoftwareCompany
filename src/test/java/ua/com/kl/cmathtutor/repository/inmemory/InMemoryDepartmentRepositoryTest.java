@@ -29,8 +29,8 @@ class InMemoryDepartmentRepositoryTest extends AbstractCrudInMemoryRepositoryTes
 
     @Override
     @MethodSource("departmentsToSave")
-    void whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities(Stream<Department> departments) {
-	super.whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities(departments);
+    void whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities(Stream<Department> entities) {
+	super.whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities(entities);
     }
 
     static Stream<Arguments> departmentsToSave() {
