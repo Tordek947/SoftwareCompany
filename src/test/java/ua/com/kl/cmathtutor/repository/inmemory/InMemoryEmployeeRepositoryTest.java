@@ -17,8 +17,8 @@ import ua.com.kl.cmathtutor.repository.inmemory.InMemoryEmployeeRepository;
 class InMemoryEmployeeRepositoryTest extends AbstractCrudInMemoryRepositoryTest<Employee> {
 
     @Test
-    final void getInstance_ShouldReturnTheSameInstance() {
-	final InMemoryEmployeeRepository firstInstance = InMemoryEmployeeRepository.getInstance();
+    void getInstance_ShouldReturnTheSameInstance() {
+	InMemoryEmployeeRepository firstInstance = InMemoryEmployeeRepository.getInstance();
 
 	assertThat(InMemoryEmployeeRepository.getInstance(), is(sameInstance(firstInstance)));
     }

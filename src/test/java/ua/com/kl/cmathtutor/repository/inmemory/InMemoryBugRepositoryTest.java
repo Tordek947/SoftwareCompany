@@ -17,8 +17,8 @@ import ua.com.kl.cmathtutor.domain.entity.Bug;
 class InMemoryBugRepositoryTest extends AbstractCrudInMemoryRepositoryTest<Bug> {
 
     @Test
-    final void getInstance_ShouldReturnTheSameInstance() {
-	final InMemoryBugRepository firstInstance = InMemoryBugRepository.getInstance();
+    void getInstance_ShouldReturnTheSameInstance() {
+	InMemoryBugRepository firstInstance = InMemoryBugRepository.getInstance();
 
 	assertThat(InMemoryBugRepository.getInstance(), is(sameInstance(firstInstance)));
     }

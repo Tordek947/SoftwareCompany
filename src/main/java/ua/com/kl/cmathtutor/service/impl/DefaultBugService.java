@@ -61,7 +61,7 @@ public class DefaultBugService implements BugService {
 
     @Override
     public void assignBugToEmployee(Bug bug, Employee employee) throws NotFoundException {
-	final Integer employeeId = employee.getId();
+	Integer employeeId = employee.getId();
 	bug = getBugById(bug.getId());
 	employeeService.getEmployeeById(employeeId);
 	bug.setEmployeeId(employeeId);

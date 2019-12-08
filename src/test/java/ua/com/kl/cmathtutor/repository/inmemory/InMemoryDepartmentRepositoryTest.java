@@ -16,8 +16,8 @@ import ua.com.kl.cmathtutor.domain.entity.Department;
 class InMemoryDepartmentRepositoryTest extends AbstractCrudInMemoryRepositoryTest<Department> {
 
     @Test
-    final void getInstance_ShouldReturnTheSameInstance() {
-	final InMemoryDepartmentRepository firstInstance = InMemoryDepartmentRepository.getInstance();
+    void getInstance_ShouldReturnTheSameInstance() {
+	InMemoryDepartmentRepository firstInstance = InMemoryDepartmentRepository.getInstance();
 
 	assertThat(InMemoryDepartmentRepository.getInstance(), is(sameInstance(firstInstance)));
     }
