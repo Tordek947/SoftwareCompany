@@ -95,12 +95,10 @@ class DefaultBugServiceTest {
     }
 
     static final Stream<Arguments> allBugLists() {
-	return Stream.of(Arguments.of(Lists.newArrayList(new Bug(), new Bug()), // @formatter:off
+	return Stream.of(Arguments.of(Lists.newArrayList(new Bug(), new Bug()),
 		Arguments.of(Collections.emptyList())),
 		Arguments.of(Lists.newArrayList(new Bug())),
 		Arguments.of(Lists.newArrayList(new Bug(), new Bug(), new Bug())));
-	// @formatter:on
-
     }
 
     @Test

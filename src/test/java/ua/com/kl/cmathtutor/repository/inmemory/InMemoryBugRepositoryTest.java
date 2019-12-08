@@ -45,14 +45,14 @@ class InMemoryBugRepositoryTest extends AbstractCrudInMemoryRepositoryTest<Bug> 
     }
 
     static Stream<Arguments> bugsToSave() {
-	return Stream.of(arguments(Stream.of(new Bug())), // formatter:off
+	return Stream.of(arguments(Stream.of(new Bug())),
 		arguments(Stream.of(new Bug(), new Bug(), new Bug())),
 		arguments(Stream.of(Bug.builder().description("Some description").build(),
 			Bug.builder().description("Descr").id(532).build())),
 		arguments(Stream.of(new Bug(), new Bug(), Bug.builder().id(-5342).description("Very old bug").build(),
 			Bug.builder().description("Super urgent one").id(Integer.MAX_VALUE).build(),
 			Bug.builder().description("Just empty description").id(Integer.MAX_VALUE).build(),
-			Bug.builder().id(Integer.MIN_VALUE).build())));// formatter:on
+			Bug.builder().id(Integer.MIN_VALUE).build())));
     }
 
 }

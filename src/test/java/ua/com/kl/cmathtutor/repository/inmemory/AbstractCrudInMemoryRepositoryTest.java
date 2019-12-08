@@ -102,10 +102,10 @@ abstract public class AbstractCrudInMemoryRepositoryTest<T extends Serializable 
 	Optional<T> foundEntity = repository.findById(savedEntity.getId());
 	Optional<T> foundOldEntity = repository.findById(savedOldEntityId);
 
-	assertAll(() -> assertNotNull(foundEntity.get()), // formatter:off
+	assertAll(() -> assertNotNull(foundEntity.get()),
 		() -> assertThat(foundEntity.get(), is(equalTo(savedEntity))),
 		() -> assertThat(foundEntity.get(), not(sameInstance(savedEntity))),
-		() -> assertThat(foundOldEntity.get(), not(equalTo(savedEntity))));// formatter:on
+		() -> assertThat(foundOldEntity.get(), not(equalTo(savedEntity))));
     }
 
     /**
