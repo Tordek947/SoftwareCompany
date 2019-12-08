@@ -2,6 +2,7 @@ package ua.com.kl.cmathtutor.repository.inmemory;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,31 +37,31 @@ abstract public class AbstractCrudInMemoryRepositoryTest<T extends Serializable 
     protected abstract T getDummyEntity();
 
     @Test
-    final void save_ShouldReturnSameEntity() {
+    void save_ShouldReturnSameEntity() {
 	T entity = getDummyEntity();
 
-	final T savedEntity = repository.save(entity);
+	T savedEntity = repository.save(entity);
 
 	assertSame(entity, savedEntity);
     }
 
     @Test
-    final void save_ShouldCreateNewEntity() {
-	final T savedEntity = repository.save(getDummyEntity());
+    void save_ShouldCreateNewEntity() {
+	T savedEntity = repository.save(getDummyEntity());
 
 	assertThat("The first created entity should has id of 1", savedEntity.getId(), is(equalTo(1)));
     }
 
     @Test
-    final void findById_withIdIsNull_ShouldReturnEmptyOptional() {
+    void findById_withIdIsNull_ShouldReturnEmptyOptional() {
 	assertFalse(repository.findById(null).isPresent());
     }
 
     @Test
-    final void whenEntityIsCreated_Then_findById_withThisEntityId_ShouldReturnEqualButNotSameEntity() {
-	final T savedEntity = repository.save(getDummyEntity());
+    void whenEntityIsCreated_Then_findById_withThisEntityId_ShouldReturnEqualButNotSameEntity() {
+	T savedEntity = repository.save(getDummyEntity());
 
-	final Optional<T> foundEntity = repository.findById(savedEntity.getId());
+	Optional<T> foundEntity = repository.findById(savedEntity.getId());
 
 	assertAll(() -> assertTrue(foundEntity.isPresent()),
 		() -> assertThat(foundEntity.get(), is(equalTo(savedEntity))),
@@ -68,13 +69,13 @@ abstract public class AbstractCrudInMemoryRepositoryTest<T extends Serializable 
     }
 
     @Test
-    final void whenEntityIsCreated_AndThenIsModifiedAndSaved_Then_findById_withThisEntityId_ShouldReturnSavedEntity() {
-	final T savedEntity = repository.save(getDummyEntity());
-	final int savedEntityId = savedEntity.getId();
+    void whenEntityIsCreated_AndThenIsModifiedAndSaved_Then_findById_withThisEntityId_ShouldReturnSavedEntity() {
+	T savedEntity = repository.save(getDummyEntity());
+	int savedEntityId = savedEntity.getId();
 	modifyNotIdFields(savedEntity);
 	repository.save(savedEntity);
 
-	final Optional<T> foundEntity = repository.findById(savedEntityId);
+	Optional<T> foundEntity = repository.findById(savedEntityId);
 
 	assertThat(foundEntity.get(), is(equalTo(savedEntity)));
     }
@@ -82,86 +83,73 @@ abstract public class AbstractCrudInMemoryRepositoryTest<T extends Serializable 
     protected abstract void modifyNotIdFields(T savedEntity);
 
     @Test
-    final void whenEntityIsCreated_AndThenIsModified_Then_findById_withThisEntityId_ShouldReturnOldEntity() {
-	final T savedEntity = repository.save(getDummyEntity());
-	final int savedEntityId = savedEntity.getId();
+    void whenEntityIsCreated_AndThenIsModified_Then_findById_withThisEntityId_ShouldReturnOldEntity() {
+	T savedEntity = repository.save(getDummyEntity());
+	int savedEntityId = savedEntity.getId();
 	modifyNotIdFields(savedEntity);
 
-	final Optional<T> foundEntity = repository.findById(savedEntityId);
+	Optional<T> foundEntity = repository.findById(savedEntityId);
 
 	assertThat(foundEntity.get(), not(equalTo(savedEntity)));
     }
 
     @Test
-    final void whenEntityIsCreated_AndThenItsIdModified_Then_findById_withUpdatedEntityId_ShouldReturnNewCreatedEntity() {
-	final T savedEntity = repository.save(getDummyEntity());
-	final Integer savedOldEntityId = savedEntity.getId();
+    void whenEntityIsCreated_AndThenItsIdModified_Then_findById_withUpdatedEntityId_ShouldReturnNewCreatedEntity() {
+	T savedEntity = repository.save(getDummyEntity());
+	Integer savedOldEntityId = savedEntity.getId();
 	savedEntity.setId(2 * savedOldEntityId);
 	repository.save(savedEntity);
 
-	final Optional<T> foundEntity = repository.findById(savedEntity.getId());
-	final Optional<T> foundOldEntity = repository.findById(savedOldEntityId);
+	Optional<T> foundEntity = repository.findById(savedEntity.getId());
+	Optional<T> foundOldEntity = repository.findById(savedOldEntityId);
 
-	assertAll(() -> assertNotNull(foundEntity.get()), // formatter:off
+	assertAll(() -> assertNotNull(foundEntity.get()),
 		() -> assertThat(foundEntity.get(), is(equalTo(savedEntity))),
 		() -> assertThat(foundEntity.get(), not(sameInstance(savedEntity))),
-		() -> assertThat(foundOldEntity.get(), not(equalTo(savedEntity))));// formatter:on
-    }
-
-    /**
-     * Tests findAll method for a given repository. <b>You must extend this method
-     * to provide proper argument source, for example:</b>
-     * 
-     * <pre>
-     * <code>
-     *     &commat;Override
-     *     &commat;MethodSource("employeesToSave")
-     *     void whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities(Stream&lt;Employee&gt; departments) {
-     *         super.whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities(departments);
-     *     }
-     * </code>
-     * </pre>
-     * 
-     * @param departments -- test parameter given from the parameter @Source
-     */
-    @ParameterizedTest
-    void whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities(Stream<T> entities) {
-	final List<T> expectedEntities = entities.map(repository::save).collect(Collectors.toList());
-
-	final List<T> foundEntities = repository.findAll();
-
-	assertThat(foundEntities.toArray(), is(equalTo(expectedEntities.toArray())));
+		() -> assertThat(foundOldEntity.get(), not(equalTo(savedEntity))));
     }
 
     @Test
-    final void whenEntityExists_Then_deleteById_ShouldReturnTrueAndDeleteEntity() {
-	final T entity = repository.save(getDummyEntity());
+    void whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities() {
+	Stream<T> entities = getAllEntities();
+	List<T> expectedEntities = entities.map(repository::save).collect(Collectors.toList());
+
+	List<T> foundEntities = repository.findAll();
+
+	assertThat(foundEntities, containsInAnyOrder(expectedEntities.toArray()));
+    }
+
+    public abstract Stream<T> getAllEntities();
+
+    @Test
+    void whenEntityExists_Then_deleteById_ShouldReturnTrueAndDeleteEntity() {
+	T entity = repository.save(getDummyEntity());
 
 	assertAll(() -> assertTrue(repository.deleteById(entity.getId())),
 		() -> assertFalse(repository.findById(entity.getId()).isPresent()));
     }
 
     @Test
-    final void whenEntityNotExists_Then_deleteById_ShouldReturnFalse() {
+    void whenEntityNotExists_Then_deleteById_ShouldReturnFalse() {
 	assertFalse(repository.deleteById(123));
     }
 
     @Test
-    final void whenEntityExists_Then_delete_ShouldReturnTrueAndDeleteEntity() {
-	final T entity = repository.save(getDummyEntity());
+    void whenEntityExists_Then_delete_ShouldReturnTrueAndDeleteEntity() {
+	T entity = repository.save(getDummyEntity());
 
 	assertAll(() -> assertTrue(repository.delete(entity)),
 		() -> assertFalse(repository.findById(entity.getId()).isPresent()));
     }
 
     @Test
-    final void whenEntityNotExists_Then_delete_ShouldReturnFalse() {
+    void whenEntityNotExists_Then_delete_ShouldReturnFalse() {
 	assertFalse(repository.delete(getDummyEntity()));
     }
 
     @ParameterizedTest(name = "Id of created entity among {0} created ones must be equal to index+1")
     @ValueSource(ints = { 5, 4, 27 })
-    final void whenSeveralEntitiesAreCreated_Then_TheyShouldContainsSequentialId(int n) {
+    void whenSeveralEntitiesAreCreated_Then_TheyShouldContainsSequentialId(int n) {
 	List<T> createdEntities = new LinkedList<>();
 
 	for (int i = 0; i < n; ++i) {

@@ -97,12 +97,10 @@ class DefaultDepartmentServiceTest {
     }
 
     static final Stream<Arguments> allDepartmentLists() {
-	return Stream.of(Arguments.of(Lists.newArrayList(new Department(), new Department()), // @formatter:off
+	return Stream.of(Arguments.of(Lists.newArrayList(new Department(), new Department()),
 		Arguments.of(Collections.emptyList())),
 		Arguments.of(Lists.newArrayList(new Department())),
 		Arguments.of(Lists.newArrayList(new Department(), new Department(), new Department())));
-	// @formatter:on
-
     }
 
     @Test

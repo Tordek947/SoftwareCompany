@@ -92,12 +92,10 @@ class DefaultEmployeeServiceTest {
     }
 
     static final Stream<Arguments> allEmployeesLists() {
-	return Stream.of(Arguments.of(Lists.newArrayList(new Employee(), new Employee()), // @formatter:off
+	return Stream.of(Arguments.of(Lists.newArrayList(new Employee(), new Employee()),
 		Arguments.of(Collections.emptyList())),
 		Arguments.of(Lists.newArrayList(new Employee())),
 		Arguments.of(Lists.newArrayList(new Employee(), new Employee(), new Employee())));
-	// @formatter:on
-
     }
 
     @Test

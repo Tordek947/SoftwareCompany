@@ -63,7 +63,7 @@ public class DefaultDepartmentService implements DepartmentService {
 
     @Override
     public void assignEmployeeToDepartment(Employee employee, Department department) throws NotFoundException {
-	final Integer departmentId = department.getId();
+	Integer departmentId = department.getId();
 	employee = employeeService.getEmployeeById(employee.getId());
 	getDepartmentById(departmentId);
 	employee.setDepartmentId(departmentId);
@@ -72,7 +72,7 @@ public class DefaultDepartmentService implements DepartmentService {
 
     @Override
     public List<Employee> getAllEmployeesInDepartment(Department department) throws NotFoundException {
-	final Integer departmentId = department.getId();
+	Integer departmentId = department.getId();
 	getDepartmentById(departmentId);
 	return employeeService.getAllEmployees().stream().filter(empl -> departmentId.equals(empl.getDepartmentId()))
 		.collect(Collectors.toList());
