@@ -2,6 +2,7 @@ package ua.com.kl.cmathtutor.repository.inmemory;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -108,30 +109,17 @@ abstract public class AbstractCrudInMemoryRepositoryTest<T extends Serializable 
 		() -> assertThat(foundOldEntity.get(), not(equalTo(savedEntity))));
     }
 
-    /**
-     * Tests findAll method for a given repository. <b>You must extend this method
-     * to provide proper argument source, for example:</b>
-     * 
-     * <pre>
-     * <code>
-     *     &commat;Override
-     *     &commat;MethodSource("employeesToSave")
-     *     void whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities(Stream&lt;Employee&gt; departments) {
-     *         super.whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities(departments);
-     *     }
-     * </code>
-     * </pre>
-     * 
-     * @param departments -- test parameter given from the parameter @Source
-     */
-    @ParameterizedTest
-    void whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities(Stream<T> entities) {
+    @Test
+    void whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities() {
+	Stream<T> entities = getAllEntities();
 	List<T> expectedEntities = entities.map(repository::save).collect(Collectors.toList());
 
 	List<T> foundEntities = repository.findAll();
 
-	assertThat(foundEntities.toArray(), is(equalTo(expectedEntities.toArray())));
+	assertThat(foundEntities, containsInAnyOrder(expectedEntities.toArray()));
     }
+
+    public abstract Stream<T> getAllEntities();
 
     @Test
     void whenEntityExists_Then_deleteById_ShouldReturnTrueAndDeleteEntity() {

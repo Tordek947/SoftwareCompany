@@ -4,11 +4,8 @@ import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.platform.commons.util.ReflectionUtils;
 
 import ua.com.kl.cmathtutor.domain.entity.Employee;
@@ -39,21 +36,11 @@ class InMemoryEmployeeRepositoryTest extends AbstractCrudInMemoryRepositoryTest<
     }
 
     @Override
-    @MethodSource("employeesToSave")
-    void whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities(Stream<Employee> entities) {
-	super.whenSeveralEntitiesAreCreated_Then_findAll_ShouldReturnAllSavedEntities(entities);
+    public Stream<Employee> getAllEntities() {
+	return Stream.of(new Employee(), new Employee(),
+		Employee.builder().departmentId(-5342).name("Meriaddoc").build(),
+		Employee.builder().name("Jack").departmentId(Integer.MAX_VALUE).build(),
+		Employee.builder().name("Jack").departmentId(Integer.MAX_VALUE).build(),
+		Employee.builder().id(Integer.MIN_VALUE).build());
     }
-
-    static Stream<Arguments> employeesToSave() {
-	return Stream.of(arguments(Stream.of(new Employee())),
-		arguments(Stream.of(new Employee(), new Employee(), new Employee())),
-		arguments(Stream.of(Employee.builder().name("Jane").build(),
-			Employee.builder().name("Greg").id(532).build())),
-		arguments(Stream.of(new Employee(), new Employee(),
-			Employee.builder().departmentId(-5342).name("Meriaddoc").build(),
-			Employee.builder().name("Jack").departmentId(Integer.MAX_VALUE).build(),
-			Employee.builder().name("Jack").departmentId(Integer.MAX_VALUE).build(),
-			Employee.builder().id(Integer.MIN_VALUE).build())));
-    }
-
 }
